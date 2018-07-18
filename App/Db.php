@@ -17,7 +17,7 @@ class Db
 	/*
      * Returns DB instance or create initial connection
      * @param
-     * @return $objInstance;
+     * @return $_instance;
      */
 	public static function getInstance()
 	{
@@ -38,6 +38,13 @@ class Db
 	}
 
 
+	/**
+	 * @param $sql
+	 * @param array $data
+	 * @param $class
+	 *
+	 * @return array
+	 */
 	public function query( $sql, $data = [], $class )
 	{
 		$sth = $this->dbh->prepare( $sql );

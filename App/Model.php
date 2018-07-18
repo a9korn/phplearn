@@ -8,9 +8,6 @@
 
 namespace App;
 
-use App;
-
-
 abstract class Model
 {
 	public const TABLE = '';
@@ -36,7 +33,7 @@ abstract class Model
 	public static function findById( $id )
 	{
 		$db   = Db::getInstance();
-		$sql  = 'SELECT * FROM ' . static::TABLE . ' WHERE id=:id';
+		$sql  = 'SELECT * FROM ' . static::TABLE . ' WHERE `id`=:id';
 		$data = [ ':id' => $id ];
 
 		return $db->query( $sql, $data, static::class );
@@ -75,6 +72,8 @@ abstract class Model
 
 	/**
 	 * @param $id
+	 *
+	 * @return int
 	 */
 	public function update( $id )
 	{
@@ -116,7 +115,7 @@ abstract class Model
 	/**
 	 * @param $id
 	 *
-	 * @return bool
+	 * @return int
 	 */
 	public function delete( $id )
 	{

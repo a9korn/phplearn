@@ -3,8 +3,8 @@
 require_once( 'autoload.php' );
 
 use App\Models\Article;
-use App\Models\User;
-use App\Config;
+//use App\Models\User;
+//use App\Config;
 
 
 $article          = new Article();
