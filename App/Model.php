@@ -17,9 +17,14 @@ abstract class Model
 
 	public $id;
 
+
+	/**
+	 * get All Data
+	 * @return array
+	 */
 	public static function findAll()
 	{
-		$db  = new Db();
+		$db  = Db::getInstance();
 		$sql = 'SELECT * FROM ' . static::TABLE;
 
 		return $db->query(
@@ -28,6 +33,18 @@ abstract class Model
 			static::class );
 	}
 
+	public static function findById( $id )
+	{
+		$db   = Db::getInstance();
+		$sql  = 'SELECT * FROM ' . static::TABLE . ' WHERE id=:id';
+		$data = [ ':id' => $id ];
+
+		return $db->query( $sql, $data, static::class );
+	}
+
+	/**
+	 * Insert obj
+	 */
 	public function insert()
 	{
 		$fields = get_object_vars( $this );
@@ -44,17 +61,21 @@ abstract class Model
 			$data[ ':' . $name ] = $value;
 		}
 
-		$sql = 'INSERT INTO'. ' '. static::TABLE . '
+		$sql = 'INSERT INTO' . ' ' . static::TABLE . '
 		(' . implode( ',', $cols ) . ' )
 		VALUES(' . implode( ',', array_keys( $data ) ) . ')';
 
-		echo $sql;
-		$db = new Db();
-		$db->execute( $sql, $data );
+		$db  = Db::getInstance();
+		$res = $db->execute( $sql, $data );
 
 		$this->id = $db->getLatsId();
+
+		return $res;
 	}
 
+	/**
+	 * @param $id
+	 */
 	public function update( $id )
 	{
 		$this->id = $id;
@@ -76,19 +97,32 @@ abstract class Model
 		SET ' . implode( ',', $cols ) . ' 
 		WHERE id=:id';
 
-		$db = new Db();
-		return $db->execute( $sql, $fields );
+		$db  = Db::getInstance();
+		$res = $db->execute( $sql, $fields );
+
+		return $res;
 	}
 
 	public function save()
 	{
-		$db  = new Db();
-		$sql = 'SELECT * FROM' . ' ' . static::TABLE;
+		$data = self::findById( $this->id );
+		if ( empty( $data ) ) {
+			return $this->insert();
+		} else {
+			return $this->update( $this->id );
+		}
+	}
 
-		$data = $db->query(
-			$sql,
-			[],
-			static::class );
+	/**
+	 * @param $id
+	 *
+	 * @return bool
+	 */
+	public function delete( $id )
+	{
+		$db  = Db::getInstance();
+		$sql = 'DELETE FROM ' . static::TABLE . ' WHERE id=:id';
 
+		return $db->execute( $sql, [ ':id' => $id ] );
 	}
 }

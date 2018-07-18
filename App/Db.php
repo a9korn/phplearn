@@ -5,18 +5,38 @@ namespace App;
 
 class Db
 {
+	protected static $_instance;
 	protected $dbh;
 
-	public function __construct()
+	protected function __construct() { }
+
+	protected function __clone() { }
+
+	protected function __wakeup() { }
+
+	/*
+     * Returns DB instance or create initial connection
+     * @param
+     * @return $objInstance;
+     */
+	public static function getInstance()
 	{
-		$config    = ( include __DIR__ . '/../config.php' )['db'];
-		$this->dbh = new \PDO(
+
+		if ( ! isset( self::$_instance ) ) {
+			self::$_instance = new self();
+		}
+
+		$config = Config::getDbConfig();
+
+		self::$_instance->dbh = new \PDO(
 			'mysql:host=' . $config['host'] . ';dbname=' . $config['db'],
 			$config['user'],
 			$config['password']
 		);
-		$this->dbh->exec( "set names utf8" );
+
+		return self::$_instance;
 	}
+
 
 	public function query( $sql, $data = [], $class )
 	{
@@ -29,12 +49,14 @@ class Db
 	public function execute( $sql, $data = [] )
 	{
 		$sth = $this->dbh->prepare( $sql );
+		$sth->execute($data);
 
-		return $sth->execute( $data );
+		return $sth->rowCount();
 	}
 
 	public function getLatsId()
 	{
 		return $this->dbh->lastInsertId();
 	}
+
 }

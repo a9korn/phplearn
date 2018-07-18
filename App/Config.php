@@ -11,15 +11,22 @@ namespace App;
 
 class Config
 {
-	protected $data;
+
+	protected static $fileconfig = __DIR__ . '/../config.php';
 
 	/**
-	 * @return mixed
+	 * @return array Config
 	 */
-	public function getConfig()
+	public static function getConfig()
 	{
-		$data = file_get_contents( __DIR__ . '/config.php' );
+		return ( require self::$fileconfig );
+	}
 
-		return $data;
+	/**
+	 * @return array DbConfig
+	 */
+	public static function getDbConfig()
+	{
+		return self::getConfig()['db'];
 	}
 }
