@@ -44,8 +44,8 @@ abstract class Model
 			$data[ ':' . $name ] = $value;
 		}
 
-		$sql = 'INSERT INTO ' . static::TABLE . ' 
-		(' . implode( ',', $cols ) . ') 
+		$sql = 'INSERT INTO'. ' '. static::TABLE . '
+		(' . implode( ',', $cols ) . ' )
 		VALUES(' . implode( ',', array_keys( $data ) ) . ')';
 
 		echo $sql;
@@ -53,5 +53,42 @@ abstract class Model
 		$db->execute( $sql, $data );
 
 		$this->id = $db->getLatsId();
+	}
+
+	public function update( $id )
+	{
+		$this->id = $id;
+		$fields   = get_object_vars( $this );
+
+		$cols = [];
+
+		foreach ( $fields as $name => $value ) {
+
+			if ( 'id' == $name ) {
+				continue;
+			}
+
+			$cols[] = $name . '=:' . $name;
+
+		}
+
+		$sql = 'UPDATE ' . static::TABLE . ' 
+		SET ' . implode( ',', $cols ) . ' 
+		WHERE id=:id';
+
+		$db = new Db();
+		return $db->execute( $sql, $fields );
+	}
+
+	public function save()
+	{
+		$db  = new Db();
+		$sql = 'SELECT * FROM' . ' ' . static::TABLE;
+
+		$data = $db->query(
+			$sql,
+			[],
+			static::class );
+
 	}
 }

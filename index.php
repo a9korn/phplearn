@@ -5,15 +5,18 @@ require_once( 'autoload.php' );
 use App\Models\Article;
 use App\Models\User;
 
-$data = Article::findAll();
-$data1 = User::findAll();
 
+
+$article = new Article();
+$article->title = 'update title';
+$article->content = 'update content';
+echo $article->update(17);
+
+$data = Article::findAll();
 
 echo "<pre>";
 print_r( $data );
-print_r( $data1 );
 
-$article = new Article();
-$article->title = 'title12';
-$article->content = 'content12';
-//$article->insert();
+//$conf = new \App\Config();
+//echo $conf->getConfig();
+
