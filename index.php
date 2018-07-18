@@ -12,3 +12,8 @@ $data1 = User::findAll();
 echo "<pre>";
 print_r( $data );
 print_r( $data1 );
+
+$article = new Article();
+$article->title = 'title12';
+$article->content = 'content12';
+//$article->insert();

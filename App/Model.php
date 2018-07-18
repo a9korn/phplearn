@@ -8,7 +8,7 @@
 
 namespace App;
 
-use App\Db;
+use App;
 
 
 abstract class Model
@@ -28,4 +28,30 @@ abstract class Model
 			static::class );
 	}
 
+	public function insert()
+	{
+		$fields = get_object_vars( $this );
+
+		$cols = [];
+		$data = [];
+
+		foreach ( $fields as $name => $value ) {
+			if ( 'id' == $name ) {
+				continue;
+			}
+
+			$cols[]              = $name;
+			$data[ ':' . $name ] = $value;
+		}
+
+		$sql = 'INSERT INTO ' . static::TABLE . ' 
+		(' . implode( ',', $cols ) . ') 
+		VALUES(' . implode( ',', array_keys( $data ) ) . ')';
+
+		echo $sql;
+		$db = new Db();
+		$db->execute( $sql, $data );
+
+		$this->id = $db->getLatsId();
+	}
 }
