@@ -30,6 +30,11 @@ abstract class Model
 			static::class );
 	}
 
+	/**
+	 * @param $id
+	 *
+	 * @return array
+	 */
 	public static function findById( $id )
 	{
 		$db   = Db::getInstance();
